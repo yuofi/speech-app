@@ -1,0 +1,27 @@
+{
+    "background_color": "#ffffff",
+    "display": "standalone",
+    "name": "speech-app",
+    "orientation": "any",
+    "scope": "/",
+    "short_name": "SpApp",
+    "start_url": "/",
+    "theme_color": "#ffffff",
+    "icons": [
+      {
+        "src": "/favicon.ico",
+        "type": "image/x-icon",
+        "sizes": "16x16"
+      },
+      {
+        "src": "/favicon.ico",
+        "type": "image/x-icon"
+      }
+    ],
+    "display_override": [
+      "standalone",
+      "window-controls-overlay"
+    ],
+    "description": "speech defects correcting app"
+  }
+    
