@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { CircularProgress } from "@mui/material";
 
-const AudioRecorder = ({ onResult }) => {
+const AudioRecorder = ({ onFeedbackUpdate }) => {
   const [recording, setRecording] = useState(false);
   const [uploading, setUploading] = useState(false);
   const mediaRecorderRef = useRef(null);
@@ -24,33 +24,46 @@ const AudioRecorder = ({ onResult }) => {
 
   const stopRecording = async () => {
     if (mediaRecorderRef.current) {
-      mediaRecorderRef.current.stop();
-      setRecording(false);
-
-      const blob = new Blob(chunks.current, { type: "audio/mp3" });
-      const formData = new FormData();
-      formData.append("file", blob, "audio.mp3");
-
       try {
+        mediaRecorderRef.current.stop();
+        setRecording(false);
+
+        const blob = new Blob(chunks.current, { type: "audio/mpeg" });
+        chunks.current = [];
+
+        const formData = new FormData();
+        formData.append("audio", blob, "audio.mp3");
+
         setUploading(true);
-        const response = await fetch("http://10.26.201.72:8000/process-audio", {
+
+        const response = await fetch("https://yufii-speech-defects.hf.space/process-audio", {
           method: "POST",
           body: formData,
         });
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          let errorMessage = `HTTP error! Status: ${response.status}`;
+          try {
+            const errorData = await response.json();
+            if (errorData && errorData.detail) {
+              errorMessage = errorData.detail;
+            }
+          } catch (jsonError) {
+            // Ignore JSON parsing errors
+          }
+          throw new Error(errorMessage);
         }
 
         const result = await response.json();
-        console.log(result);
-
-        onResult(result.prediction); // Assuming the result contains a field called "prediction"
+        if (result && result.prediction) {
+          onFeedbackUpdate(Math.round(result.prediction)); // Передача результата предсказания
+        } else {
+          console.warn("Unexpected response from server:", result);
+        }
       } catch (error) {
-        console.error("Error sending audio: ", error);
+        console.error("Error during audio recording or processing:", error);
       } finally {
         setUploading(false);
-        chunks.current = [];
       }
     }
   };
