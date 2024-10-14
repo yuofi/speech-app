@@ -41,6 +41,7 @@ export default function Training() {
       if (windowAvailable) {
         localStorage.setItem("currentPhraseIndex", newPhraseIndex);
       }
+      setFeedbackMessage("");
     }
   };
 
@@ -53,6 +54,7 @@ export default function Training() {
       if (windowAvailable) {
         localStorage.setItem("currentPhraseIndex", newPhraseIndex);
       }
+      setFeedbackMessage("");
     }
   };
 
