@@ -9,7 +9,7 @@ const AnimatedLogo = () => {
     const rect4Ref = useRef(null);
 
     useEffect(() => {
-        animateRectangles([rect1Ref, rect2Ref, rect3Ref, rect4Ref]);
+        //animateRectangles([rect1Ref, rect2Ref, rect3Ref, rect4Ref]);
     }, []);
 
     return (

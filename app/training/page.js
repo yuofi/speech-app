@@ -1,114 +1,127 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import ProgressBar from "../components/ProgressBar";
 import AudioRecorder from "../components/AudioRecorder";
-import { burrinessCourse } from "../courses/burrinessCourse";
+import { courses } from "../courses";
 import AnimatedLogo from "../components/AnimatedLogo";
 import LeftArrow from "../svg/leftArrow";
 import RightArrow from "../svg/RightArrow";
 
 export default function Training() {
-  const totalTasks = burrinessCourse.length;
+  const searchParams = useSearchParams();
+  let courseName = searchParams.get("course"); // Получаем имя курса из URL
+
+  const [selectedCourse, setSelectedCourse] = useState([]);
+  const [selectedTitle, setSelectedTitle] = useState("");
+
+  // Загружаем последний активный курс из localStorage при монтировании компонента
+  useEffect(() => {
+    if (!courseName) {
+      const lastCourse = localStorage.getItem("lastCourse");
+      courseName = lastCourse; // Если нет course в URL, подгружаем последний курс
+    }
+
+    if (courseName) {
+      const courseData = courses[courseName] || { course: [], title: "Курс не найден" };
+      setSelectedCourse(courseData.course);
+      setSelectedTitle(courseData.title);
+    }
+  }, [courseName]);
+
+  const totalTasks = selectedCourse.length;
 
   const [completedTasks, setCompletedTasks] = useState(0);
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const [feedbackMessage, setFeedbackMessage] = useState("");
-  const [completedPhrases, setCompletedPhrases] = useState([]); // Массив завершённых заданий
+  const [completedPhrases, setCompletedPhrases] = useState([]);
 
-  // Cached window reference to avoid redundancy
-  const windowAvailable = typeof window !== "undefined";
-
-  // Load saved progress on mount
+  // Загружаем прогресс курса
   useEffect(() => {
-    if (windowAvailable) {
-      const savedTasks = localStorage.getItem("completedTasks");
-      const savedPhraseIndex = localStorage.getItem("currentPhraseIndex");
-      const savedCompletedPhrases = JSON.parse(localStorage.getItem("completedPhrases")) || [];
+    if (courseName) {
+      const savedTasks = localStorage.getItem(`${courseName}_completedTasks`);
+      const savedPhraseIndex = localStorage.getItem(`${courseName}_currentPhraseIndex`);
+      const savedCompletedPhrases = JSON.parse(localStorage.getItem(`${courseName}_completedPhrases`)) || [];
 
       setCompletedTasks(savedTasks ? parseInt(savedTasks) : 0);
       setCurrentPhraseIndex(savedPhraseIndex ? parseInt(savedPhraseIndex) : 0);
       setCompletedPhrases(savedCompletedPhrases);
     }
-  }, [windowAvailable]);
+  }, [courseName]);
 
-  // Handle next phrase
+  // Переход на следующую фразу
   const handleNextPhrase = () => {
     if (currentPhraseIndex < totalTasks - 1 && completedPhrases[currentPhraseIndex]) {
       const newPhraseIndex = currentPhraseIndex + 1;
       setCurrentPhraseIndex(newPhraseIndex);
-
-      if (windowAvailable) {
-        localStorage.setItem("currentPhraseIndex", newPhraseIndex);
-      }
+      localStorage.setItem(`${courseName}_currentPhraseIndex`, newPhraseIndex);
       setFeedbackMessage("");
     }
   };
 
-  // Handle previous phrase
+  // Переход на предыдущую фразу
   const handlePrevPhrase = () => {
     if (currentPhraseIndex > 0) {
       const newPhraseIndex = currentPhraseIndex - 1;
       setCurrentPhraseIndex(newPhraseIndex);
-
-      if (windowAvailable) {
-        localStorage.setItem("currentPhraseIndex", newPhraseIndex);
-      }
+      localStorage.setItem(`${courseName}_currentPhraseIndex`, newPhraseIndex);
       setFeedbackMessage("");
     }
   };
 
-  // Update progress in localStorage
+  // Обновление прогресса
   const updateProgress = (newCompletedTasks) => {
     const progress = Math.floor((newCompletedTasks / totalTasks) * 100);
-    if (windowAvailable) {
-      localStorage.setItem("courseProgress", progress);
-      localStorage.setItem("completedTasks", newCompletedTasks);
-    }
+    localStorage.setItem(`${courseName}_courseProgress`, progress);
+    localStorage.setItem(`${courseName}_completedTasks`, newCompletedTasks);
   };
 
-  // Handle feedback from AudioRecorder component
+  // Обновление фидбека
   const handleFeedbackUpdate = (response) => {
     if (response === 1) {
       setFeedbackMessage("Ваше произношение верно");
 
-      // Обновляем завершённые задания
       const updatedCompletedPhrases = [...completedPhrases];
       updatedCompletedPhrases[currentPhraseIndex] = true;
       setCompletedPhrases(updatedCompletedPhrases);
 
-      // Обновляем количество выполненных заданий
       const newCompletedTasks = Math.min(completedTasks + 1, totalTasks);
       setCompletedTasks(newCompletedTasks);
       updateProgress(newCompletedTasks);
 
-      if (windowAvailable) {
-        localStorage.setItem("completedPhrases", JSON.stringify(updatedCompletedPhrases));
-      }
+      localStorage.setItem(`${courseName}_completedPhrases`, JSON.stringify(updatedCompletedPhrases));
     } else {
       setFeedbackMessage("Попробуйте еще раз");
     }
   };
 
+  // Если курс не найден
+  if (!selectedCourse.length) {
+    return <div>Курс не найден</div>;
+  }
+
   return (
     <div>
       <div className="HeaderContainer" style={trainingStyles.HeaderContainer}>
-        <h1 className="HeaderText" style={trainingStyles.HeaderText}>Обучение</h1>
+        <h1 className="HeaderText" style={trainingStyles.HeaderText}>{selectedTitle}</h1>
       </div>
+
       <div className="ProgressContainer" style={trainingStyles.ProgressContainer}>
         <ProgressBar progress={Math.floor(completedTasks * (100 / totalTasks))} />
         <p className="ProgressText" style={trainingStyles.ProgressText}>
-          прогресс курса: {Math.floor(completedTasks * (100 / totalTasks))}%
+          Прогресс курса: {Math.floor(completedTasks * (100 / totalTasks))}%
         </p>
         <div styles={trainingStyles.ModelLogo}>
           <AnimatedLogo />
         </div>
       </div>
+
       <div className="AnswerCardWrapper" style={trainingStyles.AnswerCardWrapper}>
         <div className="AnswerCard" style={trainingStyles.AnswerCard}>
           <div className="AnswerHead" style={trainingStyles.AnswerHead}>
             <h5 style={trainingStyles.AnswerHeadText}>
-              Произнесите '{burrinessCourse[currentPhraseIndex]}'
+              Произнесите '{selectedCourse[currentPhraseIndex]}'
             </h5>
           </div>
           <div className="AnswerText" style={trainingStyles.AnswerText}>
@@ -118,8 +131,8 @@ export default function Training() {
           </div>
         </div>
       </div>
+
       <div className="ControlCard" style={trainingStyles.ControlCard}>
-        {/* Left Arrow */}
         <button
           onClick={handlePrevPhrase}
           disabled={currentPhraseIndex === 0}
@@ -133,12 +146,10 @@ export default function Training() {
           <LeftArrow />
         </button>
 
-        {/* AudioRecorder Component */}
-        <div>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
           <AudioRecorder onFeedbackUpdate={handleFeedbackUpdate} />
         </div>
 
-        {/* Right Arrow */}
         <button
           onClick={handleNextPhrase}
           disabled={currentPhraseIndex === totalTasks - 1 || !completedPhrases[currentPhraseIndex]}
@@ -200,7 +211,7 @@ const trainingStyles = {
   },
   AnswerCard: {
     borderRadius: "30px",
-    background: "#F2F1F1", 
+    background: "#F2F1F1",
     margin: "10px",
     padding: "10px",
     maxWidth: "90%",
@@ -208,7 +219,8 @@ const trainingStyles = {
   },
   AnswerHeadText: {
     color: "rgb(0, 0, 0)",
-    fontFamily: "Inter",
+    fontFamily: "Noto Sans",
+    fontWeight: "100",
     fontSize: "20px",
     fontWeight: "600",
     lineHeight: "24px",
@@ -217,7 +229,6 @@ const trainingStyles = {
   },
   AnswerText: {
     color: "rgb(0, 0, 0)",
-    fontFamily: "Inter",
     fontSize: "14px",
     fontWeight: "400",
     lineHeight: "18px",

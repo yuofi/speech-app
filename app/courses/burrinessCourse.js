@@ -3,8 +3,22 @@ export const burrinessCourse = [
     "корабль",
     "корова",
     "Мотор рычит",
-    "Корабль поднимается в небо"
+    "рак", 
+    "роса", 
+    "рот", 
+    "ромашка",
+    "воробей", 
+    "каравай", 
+    "корабль", 
+    "корона", 
+    "герой",
+    "сыр", 
+    "бор", 
+    "мир", 
+    "жар", 
+    "удар"
   ];
 
   export const burrinessTitle = "Исправление картавости";
+  export const burrinessLength = burrinessCourse.length;
   

@@ -2,23 +2,34 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { burrinessCourse, burrinessTitle } from "./courses/burrinessCourse";
+import { burrinessTitle, burrinessLength } from "./courses/burrinessCourse";
+import { fricativesTitle, fricativesLength } from "./courses/fricativesCourse";
+import LinkArrow from "./svg/linkArrow.js";
 
 export default function Home() {
-  const [progress, setProgress] = useState(0);
-  const [completedTasks, setCompletedTasks] = useState(0);
-  const totalTasks = burrinessCourse.length;
+  const [burrinessProgress, setBurrinessProgress] = useState(0);
+  const [burrinessCompletedTasks, setBurrinessCompletedTasks] = useState(0);
+  const [fricativesProgress, setFricativesProgress] = useState(0);
+  const [fricativesCompletedTasks, setFricativesCompletedTasks] = useState(0);
 
-  // Retrieve progress from localStorage
+  // Load progress and completed tasks for each course
   useEffect(() => {
-    const savedProgress = localStorage.getItem("courseProgress");
-    const savedTasks = localStorage.getItem("completedTasks");
-    if (savedProgress && savedTasks) {
-      setProgress(parseInt(savedProgress));
-      setCompletedTasks(parseInt(savedTasks));
+    // Load Burriness Course progress
+    const savedBurrinessProgress = localStorage.getItem("burriness_courseProgress");
+    const savedBurrinessTasks = localStorage.getItem("burriness_completedTasks");
+    if (savedBurrinessProgress && savedBurrinessTasks) {
+      setBurrinessProgress(parseInt(savedBurrinessProgress));
+      setBurrinessCompletedTasks(parseInt(savedBurrinessTasks));
+    }
+
+    // Load Fricatives Course progress
+    const savedFricativesProgress = localStorage.getItem("fricatives_courseProgress");
+    const savedFricativesTasks = localStorage.getItem("fricatives_completedTasks");
+    if (savedFricativesProgress && savedFricativesTasks) {
+      setFricativesProgress(parseInt(savedFricativesProgress));
+      setFricativesCompletedTasks(parseInt(savedFricativesTasks));
     }
   }, []);
-
 
   return (
     <div>
@@ -27,6 +38,7 @@ export default function Home() {
           Привет, 👋 Имя, время продолжить обучение
         </h1>
       </div>
+
       <div className="MainContainer" style={styles.MainContainer}>
         <div className="todayCard" style={styles.todayCard}>
           <div className="GoalHeadContainer" style={styles.GoalHeadContainer}>
@@ -42,70 +54,65 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Карточка курса по исправлению картавости */}
         <div className="CourseCard" style={styles.CourseCard}>
           <div className="CourseHeader" style={styles.CourseHeader}>
             <h5 className="CourseTitle" style={styles.CourseTitle}>
               {burrinessTitle}
             </h5>
             <span className="CourseIcon" style={styles.CourseIcon}>
-              <Link legacyBehavior href="/training">
-                <svg
-                  width="44.000000"
-                  height="44.000000"
-                  viewBox="0 0 44 44"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+              <Link legacyBehavior href={{ pathname: "/training", query: { course: "burriness" } }}>
+                <a
+                  onClick={() => {
+                    localStorage.setItem("lastCourse", "burriness");
+                    const savedCourse = localStorage.getItem("lastCourse");
+
+                    if (savedCourse === "burriness") {
+                      console.log("Переменная успешно сохранена:", savedCourse);
+                    } else {
+                      console.log("Ошибка сохранения переменной.");
+                    }
+                  }}
                 >
-                  <desc>Created with Pixso.</desc>
-                  <defs />
-                  <rect
-                    id="фрейм 2"
-                    width="44.000000"
-                    height="44.000000"
-                    fill="#FFFFFF"
-                    fillOpacity="0"
-                  />
-                  <rect
-                    id="фрейм 1"
-                    width="44.000000"
-                    height="44.000000"
-                    fill="#FFFFFF"
-                    fillOpacity="0"
-                  />
-                  <circle
-                    id="Эллипс 2"
-                    cx="22.000000"
-                    cy="22.000000"
-                    r="22.000000"
-                    fill="#FFFFFF"
-                    fillOpacity="0"
-                  />
-                  <circle
-                    id="Эллипс 2"
-                    cx="22.000000"
-                    cy="22.000000"
-                    r="20.500000"
-                    stroke="#000000"
-                    strokeOpacity="1.000000"
-                    strokeWidth="3.000000"
-                  />
-                  <path
-                    id="矢量 13"
-                    d="M19 13L19 15.4L26.9 15.4L13 29.3L14.69 31L28.6 17.09L28.6 25L31 25L31 13L19 13Z"
-                    fill="#000000"
-                    fillOpacity="1.000000"
-                    fillRule="evenodd"
-                  />
-                </svg>
+                  <LinkArrow />
+                </a>
               </Link>
             </span>
           </div>
           <div className="CourseProgress" style={styles.CourseProgress}>
             <div className="ProgressBox" style={styles.ProgressBox}>
-            <p style={styles.ProgressText}>{progress}%</p>
+              <p style={styles.ProgressText}>{burrinessProgress}%</p>
             </div>
             <div className="ProgressBox" style={styles.ProgressBox}>
-              <p style={styles.ProgressText}>{completedTasks}/{totalTasks}</p>
+              <p style={styles.ProgressText}>{burrinessCompletedTasks}/{burrinessLength}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Карточка курса по исправлению фрикативности */}
+        <div className="CourseCard" style={styles.CourseCard}>
+          <div className="CourseHeader" style={styles.CourseHeader}>
+            <h5 className="CourseTitle" style={styles.CourseTitle}>
+              {fricativesTitle}
+            </h5>
+            <span className="CourseIcon" style={styles.CourseIcon}>
+              <Link legacyBehavior href={{ pathname: "/training", query: { course: "fricatives" } }}>
+                <a
+                  onClick={() => {
+                    localStorage.setItem("lastCourse", "fricatives");
+                  }}
+                >
+                  <LinkArrow />
+                </a>
+              </Link>
+            </span>
+          </div>
+          <div className="CourseProgress" style={styles.CourseProgress}>
+            <div className="ProgressBox" style={styles.ProgressBox}>
+              <p style={styles.ProgressText}>{fricativesProgress}%</p>
+            </div>
+            <div className="ProgressBox" style={styles.ProgressBox}>
+              <p style={styles.ProgressText}>{fricativesCompletedTasks}/{fricativesLength}</p>
             </div>
           </div>
         </div>
@@ -175,7 +182,7 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     margin: "2%",
-    marginLeft: "10%",
+    marginLeft: "7%",
   },
   HelloText: {
     fontWeight: "400",

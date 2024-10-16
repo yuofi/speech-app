@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 export default function Navbar() {
@@ -28,7 +29,10 @@ export default function Navbar() {
           </Link>
         </li>
         <li>
-          <Link legacyBehavior href="/training">
+          <Link
+            legacyBehavior
+            href={"/training"}
+          >
             <a style={styles.homeIcon}>
               <svg
                 width="43.000000"

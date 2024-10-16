@@ -12,7 +12,7 @@ export function animateRectangles(rectRefs) {
     rectElement.setAttribute('data-original-y', originalY);
 
     function animate() {
-      const scaleFactor = Math.random() + 0.5; // Between 0.5 and 1.5
+      const scaleFactor = Math.random() + 0.3;
       const newHeight = originalHeight * scaleFactor;
       const heightDiff = newHeight - originalHeight;
       const newY = originalY - heightDiff;
