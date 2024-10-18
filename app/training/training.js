@@ -95,6 +95,8 @@ export default function Training() {
       updateProgress(newCompletedTasks);
 
       localStorage.setItem(`${courseName}_completedPhrases`, JSON.stringify(updatedCompletedPhrases));
+    } else if (response === 2){
+      setFeedbackMessage("Вы произнесли другое слово");
     } else {
       setFeedbackMessage("Попробуйте еще раз");
     }
@@ -151,7 +153,7 @@ export default function Training() {
         </button>
 
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-          <AudioRecorder onFeedbackUpdate={handleFeedbackUpdate} />
+          <AudioRecorder onFeedbackUpdate={handleFeedbackUpdate} phrase={selectedCourse[currentPhraseIndex]}  />
         </div>
 
         <button
