@@ -31,7 +31,7 @@ const AudioRecorder = ({ onFeedbackUpdate, phrase }) => {
           setUploading(true);
 
           try {
-            const response = await fetch("https://yufii-speech-defects.hf.space/process-audio", {
+            const response = await fetch("http://127.0.0.1:8000/process-audio", {
               method: "POST",
               body: formData,
             });
@@ -60,7 +60,7 @@ const AudioRecorder = ({ onFeedbackUpdate, phrase }) => {
               result.prediction[0].length > 0
             ) {
               if (result.match_phrase) {
-                onFeedbackUpdate(Math.round(result.prediction[0][0]));
+                onFeedbackUpdate(Math.round(result.prediction));
               } else {
                 onFeedbackUpdate(2); 
               }
