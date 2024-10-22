@@ -181,3 +181,69 @@ navbar {
   align-items: center;
   justify-content: center;
 }
+
+
+.markdown-body {
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Заголовки */
+.markdown-body h1, .markdown-body h2, .markdown-body h3 {
+  color: #333;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+}
+
+/* Параграфы */
+.markdown-body p {
+  margin-bottom: 1em;
+  color: #555;
+}
+
+/* Ссылки */
+.markdown-body a {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+.markdown-body a:hover {
+  text-decoration: underline;
+}
+
+/* Списки */
+.markdown-body ul, .markdown-body ol {
+  padding-left: 20px;
+  margin-bottom: 1em;
+}
+
+/* Блоки кода */
+.markdown-body pre {
+  background-color: #272822;
+  padding: 10px;
+  border-radius: 5px;
+  color: #f8f8f2;
+  overflow-x: auto;
+}
+
+.markdown-body code {
+  background-color: #f5f5f5;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* Цитаты */
+.markdown-body blockquote {
+  border-left: 4px solid #d0d0d0;
+  padding-left: 16px;
+  color: #6a737d;
+  margin: 1.5em 0;
+}

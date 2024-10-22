@@ -2,12 +2,22 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 export default function Navbar() {
+  const [hover, setHover] = useState(null);
+
   return (
     <nav className="navbar" style={styles.Navbar}>
       <ul style={styles.navList}>
         <li>
           <Link legacyBehavior href="/">
-            <a style={styles.homeIcon}>
+            <a
+              style={
+                hover === 1
+                  ? { ...styles.navIcon, ...styles.hoverStyle }
+                  : styles.navIcon
+              }
+              onMouseEnter={() => setHover(1)}
+              onMouseLeave={() => setHover(null)}
+            >
               <svg
                 width="32.25"
                 height="33.5627"
@@ -29,11 +39,16 @@ export default function Navbar() {
           </Link>
         </li>
         <li>
-          <Link
-            legacyBehavior
-            href={"/training"}
-          >
-            <a style={styles.homeIcon}>
+          <Link legacyBehavior href={"/training"}>
+            <a
+              style={
+                hover === 2
+                  ? { ...styles.navIcon, ...styles.hoverStyle }
+                  : styles.navIcon
+              }
+              onMouseEnter={() => setHover(2)}
+              onMouseLeave={() => setHover(null)}
+            >
               <svg
                 width="43.000000"
                 height="43.000000"
@@ -81,20 +96,27 @@ export default function Navbar() {
           </Link>
         </li>
         <li>
-          <Link legacyBehavior href="/settings">
-            <a style={styles.homeIcon}>
+          <Link legacyBehavior href="/tips">
+            <a
+              style={
+                hover === 3
+                  ? { ...styles.navIcon, ...styles.hoverStyle }
+                  : styles.navIcon
+              }
+              onMouseEnter={() => setHover(3)}
+              onMouseLeave={() => setHover(null)}
+            >
               <svg
-                width="33.461166"
-                height="34.399963"
-                viewBox="0 0 33.4612 34.4"
+                width="35.833313"
+                height="35.833344"
+                viewBox="0 0 35.8333 35.8333"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <desc>Created with Pixso.</desc>
                 <defs />
                 <path
-                  id="settings 286"
-                  d="M29.52 18.88C29.59 18.34 29.63 17.79 29.63 17.2C29.63 16.62 29.59 16.05 29.5 15.51L33.14 12.68C33.46 12.43 33.55 11.95 33.35 11.59L29.91 5.64C29.7 5.24 29.25 5.12 28.86 5.24L24.57 6.96C23.68 6.28 22.73 5.71 21.67 5.28L21.03 0.73C20.95 0.3 20.6 0 20.17 0L13.29 0C12.86 0 12.52 0.3 12.44 0.73L11.8 5.28C10.74 5.71 9.77 6.3 8.9 6.96L4.61 5.24C4.22 5.1 3.77 5.24 3.56 5.64L0.13 11.59C-0.08 11.96 -0.01 12.43 0.35 12.68L3.99 15.51C3.9 16.05 3.83 16.64 3.83 17.2C3.83 17.75 3.86 18.34 3.95 18.88L0.31 21.71C-0.01 21.96 -0.1 22.44 0.1 22.8L3.54 28.75C3.75 29.15 4.2 29.27 4.6 29.15L8.88 27.43C9.77 28.11 10.72 28.68 11.78 29.11L12.43 33.66C12.52 34.09 12.86 34.4 13.29 34.4L20.17 34.4C20.6 34.4 20.95 34.09 21.01 33.66L21.65 29.11C22.71 28.68 23.68 28.11 24.56 27.43L28.84 29.15C29.23 29.29 29.68 29.15 29.89 28.75L33.33 22.8C33.55 22.41 33.46 21.96 33.12 21.71L29.52 18.88ZM16.73 23.65C13.18 23.65 10.28 20.74 10.28 17.2C10.28 13.65 13.18 10.75 16.73 10.75C20.27 10.75 23.18 13.65 23.18 17.2C23.18 20.74 20.27 23.65 16.73 23.65Z"
+                  d="M17.91 15.94C16.82 15.94 15.94 16.82 15.94 17.91C15.94 19 16.82 19.88 17.91 19.88C19 19.88 19.88 19 19.88 17.91C19.88 16.82 19 15.94 17.91 15.94ZM17.91 0C8.02 0 0 8.02 0 17.91C0 27.8 8.02 35.83 17.91 35.83C27.8 35.83 35.83 27.8 35.83 17.91C35.83 8.02 27.8 0 17.91 0ZM21.84 21.84L7.16 28.66L13.99 13.99L28.66 7.16L21.84 21.84Z"
                   fill="#444444"
                   fillOpacity="1.000000"
                   fillRule="evenodd"
@@ -109,25 +131,30 @@ export default function Navbar() {
 }
 
 const styles = {
-  homeIcon: {
+  navIcon: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     padding: "10px",
+    transition: "all 0.3s ease-in-out",
   },
+  hoverStyle: {
+    transform: "scale(1.1)",
+  },
+
   Navbar: {
     display: "flex",
     alignItems: "center",
-    position: 'fixed',
+    position: "fixed",
     bottom: 0,
     left: 0,
     right: 0,
-    height: '40px',
-    backgroundColor: '#fff',
+    height: "40px",
+    backgroundColor: "#fff",
     zIndex: 1000,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   navList: {
     listStyle: "none",

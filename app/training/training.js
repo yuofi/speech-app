@@ -4,13 +4,13 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation"; // use only on client side
 import ProgressBar from "../components/ProgressBar";
 import AudioRecorder from "../components/AudioRecorder";
-import { courses } from "../courses"; 
+import { courses } from "../courses";
 import AnimatedLogo from "../components/AnimatedLogo";
 import LeftArrow from "../svg/leftArrow";
 import RightArrow from "../svg/RightArrow";
 
 export default function Training() {
-  // Ensure client-side execution only
+  const [hover, setHover] = useState(null);
   const [isClient, setIsClient] = useState(false);
   const [courseName, setCourseName] = useState(null);
 
@@ -95,7 +95,7 @@ export default function Training() {
       updateProgress(newCompletedTasks);
 
       localStorage.setItem(`${courseName}_completedPhrases`, JSON.stringify(updatedCompletedPhrases));
-    } else if (response === 2){
+    } else if (response === 2) {
       setFeedbackMessage("Вы произнесли другое слово");
     } else {
       setFeedbackMessage("Попробуйте еще раз");
@@ -139,23 +139,33 @@ export default function Training() {
       </div>
 
       <div className="ControlCard" style={trainingStyles.ControlCard}>
-        <button
-          onClick={handlePrevPhrase}
-          disabled={currentPhraseIndex === 0}
-          style={{
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            opacity: currentPhraseIndex === 0 ? 0.5 : 1,
-          }}
-        >
-          <LeftArrow />
-        </button>
-
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-          <AudioRecorder onFeedbackUpdate={handleFeedbackUpdate} phrase={selectedCourse[currentPhraseIndex]}  />
+        <div style={hover === 1 ? { ...{ transition: "all 0.3s ease-in-out" }, ...trainingStyles.hoverStyle } : { transition: "all 0.3s ease-in-out" }}
+          onMouseEnter={() => setHover(1)}
+          onMouseLeave={() => setHover(null)}>
+            <button
+            onClick={handlePrevPhrase}
+            disabled={currentPhraseIndex === 0}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              opacity: currentPhraseIndex === 0 ? 0.5 : 1,
+              transition: "all 0.3s ease-in-out",
+            }}
+          >
+            <LeftArrow />
+          </button>
         </div>
 
+        <div style={hover === 3 ? { ...trainingStyles.Micro, ...trainingStyles.hoverStyle } : trainingStyles.Micro}
+          onMouseEnter={() => setHover(3)}
+          onMouseLeave={() => setHover(null)}>
+          <AudioRecorder onFeedbackUpdate={handleFeedbackUpdate} phrase={selectedCourse[currentPhraseIndex]} />
+        </div>
+
+        <div style={hover === 2 ? { ...{ transition: "all 0.3s ease-in-out" }, ...trainingStyles.hoverStyle } : { transition: "all 0.3s ease-in-out" }}
+          onMouseEnter={() => setHover(2)}
+          onMouseLeave={() => setHover(null)}>
         <button
           onClick={handleNextPhrase}
           disabled={currentPhraseIndex === totalTasks - 1 || !completedPhrases[currentPhraseIndex]}
@@ -164,16 +174,27 @@ export default function Training() {
             border: "none",
             cursor: "pointer",
             opacity: currentPhraseIndex === totalTasks - 1 || !completedPhrases[currentPhraseIndex] ? 0.5 : 1,
+            transition: "all 0.3s ease-in-out",
           }}
         >
           <RightArrow />
         </button>
+        </div>
       </div>
     </div>
   );
 }
 
 const trainingStyles = {
+  Micro: {
+    display: "flex", 
+    justifyContent: "center", 
+    alignItems: "center",
+    transition: "all 0.3s ease-in-out",
+  },
+  hoverStyle: {
+    transform: "scale(1.1)"
+  },
   HeaderContainer: {
     padding: "20px",
     marginBottom: "10px",

@@ -7,6 +7,7 @@ import { fricativesTitle, fricativesLength } from "./courses/fricativesCourse";
 import LinkArrow from "./svg/linkArrow.js";
 
 export default function Home() {
+  const [hover, setHover] = useState(null);
   const [burrinessProgress, setBurrinessProgress] = useState(0);
   const [burrinessCompletedTasks, setBurrinessCompletedTasks] = useState(0);
   const [fricativesProgress, setFricativesProgress] = useState(0);
@@ -35,7 +36,7 @@ export default function Home() {
     <div>
       <div className="HelloContainer" style={styles.HelloContainer}>
         <h1 className="HelloText" style={styles.HelloText}>
-          Привет, 👋 Имя, время продолжить обучение
+          Привет! 👋 время продолжить обучение
         </h1>
       </div>
 
@@ -60,19 +61,16 @@ export default function Home() {
             <h5 className="CourseTitle" style={styles.CourseTitle}>
               {burrinessTitle}
             </h5>
-            <span className="CourseIcon" style={styles.CourseIcon}>
+            <span className="CourseIcon" 
+              style={hover === 1 ? { ...styles.CourseIcon, ...styles.hoverStyle } : styles.CourseIcon}
+              onMouseEnter={() => setHover(1)}
+              onMouseLeave={() => setHover(null)}>
               <Link legacyBehavior href={{ pathname: "/training", query: { course: "burriness" } }}>
                 <a
                   onClick={() => {
                     localStorage.setItem("lastCourse", "burriness");
-                    const savedCourse = localStorage.getItem("lastCourse");
-
-                    if (savedCourse === "burriness") {
-                      console.log("Переменная успешно сохранена:", savedCourse);
-                    } else {
-                      console.log("Ошибка сохранения переменной.");
-                    }
-                  }}
+                  }
+                  }
                 >
                   <LinkArrow />
                 </a>
@@ -95,7 +93,10 @@ export default function Home() {
             <h5 className="CourseTitle" style={styles.CourseTitle}>
               {fricativesTitle}
             </h5>
-            <span className="CourseIcon" style={styles.CourseIcon}>
+            <span className="CourseIcon" 
+              style={hover === 2 ? { ...styles.CourseIcon, ...styles.hoverStyle } : styles.CourseIcon}
+              onMouseEnter={() => setHover(2)}
+              onMouseLeave={() => setHover(null)}>
               <Link legacyBehavior href={{ pathname: "/training", query: { course: "fricatives" } }}>
                 <a
                   onClick={() => {
@@ -122,6 +123,9 @@ export default function Home() {
 }
 
 const styles = {
+  hoverStyle: {
+    transform: "scale(1.1)",
+  },
   todayCard: {
     display: "flex",
     flexDirection: "column",
@@ -215,6 +219,7 @@ const styles = {
   CourseIcon: {
     fontSize: "24px",
     color: "rgb(0, 0, 0)",
+    transition: "all 0.3s ease-in-out",
   },
   CourseProgress: {
     display: "flex",
