@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import Header from "./components/Header";
 import { useEffect } from "react";
 
+//запускаем сервис-воркер для PWA
 export default function RootLayout({ children }) {
   useEffect(() => {
     if (typeof window !== "undefined" && "serviceWorker" in navigator) {
@@ -29,7 +30,7 @@ export default function RootLayout({ children }) {
       <head>
         {/* Указание на manifest.json */}
         <link rel="manifest" href="/manifest.json" />
-        {/* Указание иконок для PWA (можете настроить по своему усмотрению) */}
+        {/* Указание иконок для PWA*/}
         <meta name="theme-color" content="#ffffff" />
       </head>
       <body style={styles.body}>

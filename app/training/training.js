@@ -10,54 +10,64 @@ import LeftArrow from "../svg/leftArrow";
 import RightArrow from "../svg/RightArrow";
 
 export default function Training() {
+  // Переменная для отслеживания состояния "hover" для интерактивных элементов
   const [hover, setHover] = useState(null);
+  // Переменная для проверки, запущен ли код на стороне клиента
   const [isClient, setIsClient] = useState(false);
+  // Переменная для хранения имени курса
   const [courseName, setCourseName] = useState(null);
 
+  // Эффект, который обновляет состояние isClient после первого рендера на клиенте
   useEffect(() => {
     setIsClient(true);
   }, []);
 
+  // Получаем параметры из URL, используя useSearchParams
   const searchParams = useSearchParams();
   useEffect(() => {
     if (isClient) {
-      let course = searchParams.get("course");
+      let course = searchParams.get("course"); // Получаем параметр "course" из URL
       if (!course) {
-        course = localStorage.getItem("lastCourse");
+        course = localStorage.getItem("lastCourse"); // Если курс не указан, загружаем последний курс из localStorage
       }
-      setCourseName(course);
+      setCourseName(course); // Устанавливаем имя текущего курса
     }
   }, [isClient, searchParams]);
 
+  // Состояния для хранения выбранного курса и его заголовка
   const [selectedCourse, setSelectedCourse] = useState([]);
   const [selectedTitle, setSelectedTitle] = useState("");
 
+  // Эффект, который обновляет выбранный курс и заголовок на основе имени курса
   useEffect(() => {
     if (courseName) {
-      const courseData = courses[courseName] || { course: [], title: "Курс не найден" };
-      setSelectedCourse(courseData.course);
-      setSelectedTitle(courseData.title);
+      const courseData = courses[courseName] || { course: [], title: "Курс не найден" }; // Ищем данные курса
+      setSelectedCourse(courseData.course); // Устанавливаем список фраз курса
+      setSelectedTitle(courseData.title); // Устанавливаем заголовок курса
     }
   }, [courseName]);
 
+  // Переменные для общего числа упражнений, выполненных упражнений, текущей фразы, сообщения обратной связи, завершенных фраз
   const totalTasks = selectedCourse.length;
   const [completedTasks, setCompletedTasks] = useState(0);
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [completedPhrases, setCompletedPhrases] = useState([]);
 
+  // Эффект, который загружает прогресс курса из localStorage, если мы на клиенте и курс известен
   useEffect(() => {
     if (isClient && courseName) {
-      const savedTasks = localStorage.getItem(`${courseName}_completedTasks`);
-      const savedPhraseIndex = localStorage.getItem(`${courseName}_currentPhraseIndex`);
-      const savedCompletedPhrases = JSON.parse(localStorage.getItem(`${courseName}_completedPhrases`)) || [];
+      const savedTasks = localStorage.getItem(`${courseName}_completedTasks`); // Загружаем количество выполненных упражнений
+      const savedPhraseIndex = localStorage.getItem(`${courseName}_currentPhraseIndex`); // Загружаем индекс текущей фразы
+      const savedCompletedPhrases = JSON.parse(localStorage.getItem(`${courseName}_completedPhrases`)) || []; // Загружаем завершенные фразы
 
-      setCompletedTasks(savedTasks ? parseInt(savedTasks) : 0);
-      setCurrentPhraseIndex(savedPhraseIndex ? parseInt(savedPhraseIndex) : 0);
-      setCompletedPhrases(savedCompletedPhrases);
+      setCompletedTasks(savedTasks ? parseInt(savedTasks) : 0); // Устанавливаем количество выполненных упражнений
+      setCurrentPhraseIndex(savedPhraseIndex ? parseInt(savedPhraseIndex) : 0); // Устанавливаем индекс текущей фразы
+      setCompletedPhrases(savedCompletedPhrases); // Устанавливаем завершенные фразы
     }
   }, [isClient, courseName]);
 
+  //изменяем переменные при переключении на следующую фразу
   const handleNextPhrase = () => {
     if (currentPhraseIndex < totalTasks - 1 && completedPhrases[currentPhraseIndex]) {
       const newPhraseIndex = currentPhraseIndex + 1;
@@ -66,7 +76,7 @@ export default function Training() {
       setFeedbackMessage("");
     }
   };
-
+  //изменяем переменные при переключении на предыдущую фразу
   const handlePrevPhrase = () => {
     if (currentPhraseIndex > 0) {
       const newPhraseIndex = currentPhraseIndex - 1;
@@ -75,13 +85,14 @@ export default function Training() {
       setFeedbackMessage("");
     }
   };
-
+  //изменяем прогресс при правлилно выполненном задании
   const updateProgress = (newCompletedTasks) => {
     const progress = Math.floor((newCompletedTasks / totalTasks) * 100);
     localStorage.setItem(`${courseName}_courseProgress`, progress);
     localStorage.setItem(`${courseName}_completedTasks`, newCompletedTasks);
   };
-
+  
+  //обрабатываем ответ из компоненты AudioRecorder и выводим соответствующую фразу
   const handleFeedbackUpdate = (response) => {
     if (response === 1) {
       setFeedbackMessage("Ваше произношение верно");
@@ -102,13 +113,15 @@ export default function Training() {
     }
   };
 
-  // If course is not found or not yet loaded, show a fallback
+  // Если курс не найден, появится это сообщение
   if (!selectedCourse.length) {
     return <div>Курс не найден</div>;
   }
 
+
   return (
     <div>
+      {/* заголовок и прогресс */}
       <div className="HeaderContainer" style={trainingStyles.HeaderContainer}>
         <h1 className="HeaderText" style={trainingStyles.HeaderText}>{selectedTitle}</h1>
       </div>
@@ -122,10 +135,10 @@ export default function Training() {
           <AnimatedLogo />
         </div>
       </div>
-
+      {/* сегмент с ответом модели и фразой для произнесения */}
       <div className="AnswerCardWrapper" style={trainingStyles.AnswerCardWrapper}>
         <div className="AnswerCard" style={trainingStyles.AnswerCard}>
-          <div className="AnswerHead" style={trainingStyles.AnswerHead}>
+          <div className="AnswerHead">
             <h5 style={trainingStyles.AnswerHeadText}>
               Произнесите '{selectedCourse[currentPhraseIndex]}'
             </h5>
@@ -137,7 +150,7 @@ export default function Training() {
           </div>
         </div>
       </div>
-
+    {/* сегмент с кнопками для перехода на следующую или предыдущую фразу и кнопкой записи */}
       <div className="ControlCard" style={trainingStyles.ControlCard}>
         <div style={hover === 1 ? { ...{ transition: "all 0.3s ease-in-out" }, ...trainingStyles.hoverStyle } : { transition: "all 0.3s ease-in-out" }}
           onMouseEnter={() => setHover(1)}

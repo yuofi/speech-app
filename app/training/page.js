@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 
-// Dynamically import the Training component with SSR disabled
+// Оключаем рендкринг на стороне сервера для устранения ошибок при начальной загрузки страницы
 const Training = dynamic(() => import('./training'), { ssr: false });
 
 export default function TrainingPage() {

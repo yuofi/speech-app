@@ -7,7 +7,8 @@ import MarkdownViewer from "../components/MarkdownViewer";
 const TipsPage = () => {
   const searchParams = useSearchParams();
   const [filePath, setFilePath] = useState("/markdown/burriness.md");
-
+  
+  //ищем нужную страницу в папке markdown
   useEffect(() => {
     const page = searchParams.get("page");
     if (page) {
@@ -40,7 +41,7 @@ const styles = {
   link: {
     marginRight: "15px",
     color: "grey",
-    textDecoration: "underline",
+    textDecoration: "none",
     cursor: "pointer",
   },
 };

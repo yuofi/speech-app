@@ -8,6 +8,7 @@ const AudioRecorder = ({ onFeedbackUpdate, phrase }) => {
   const mediaRecorderRef = useRef(null);
   const chunks = useRef([]);
 
+  //функция для начала записи
   const startRecording = () => {
     navigator.mediaDevices
       .getUserMedia({ audio: true })
@@ -19,23 +20,26 @@ const AudioRecorder = ({ onFeedbackUpdate, phrase }) => {
           chunks.current.push(event.data);
         };
 
-        // Listen for the 'stop' event to handle sending the audio after recording stops
+        // При остановке записи обрабатываем аудио и отправляем на сервер
         mediaRecorder.onstop = async () => {
           const blob = new Blob(chunks.current, { type: "audio/mpeg" });
           chunks.current = [];  
-
+          
+          //добавляем аудио и фразу для отправки на серевер
           const formData = new FormData();
           formData.append("audio", blob, "audio.mp3");
           formData.append("phrase", phrase);
 
           setUploading(true);
 
+          //отправляем данные на сервер для прогона через модель и принимаем ответ
           try {
             const response = await fetch("https://yufii-speech-defects.hf.space/process-audio", {
               method: "POST",
               body: formData,
             });
 
+            //обработка ошибок
             if (!response.ok) {
               let errorMessage = `HTTP error! Status: ${response.status}`;
               try {
@@ -49,8 +53,9 @@ const AudioRecorder = ({ onFeedbackUpdate, phrase }) => {
               throw new Error(errorMessage);
             }
 
+            //обрабатываем ответ с сервера (ответ модели и соответствие слова изначальному)
             const result = await response.json();
-
+            
             if (
               result &&
               result.prediction &&
@@ -81,6 +86,7 @@ const AudioRecorder = ({ onFeedbackUpdate, phrase }) => {
       .catch((err) => console.error("Error accessing microphone: ", err));
   };
 
+  //завершаем запись
   const stopRecording = () => {
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();

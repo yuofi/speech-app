@@ -13,9 +13,9 @@ export default function Home() {
   const [fricativesProgress, setFricativesProgress] = useState(0);
   const [fricativesCompletedTasks, setFricativesCompletedTasks] = useState(0);
 
-  // Load progress and completed tasks for each course
+  // Загружаем прогресс с каждого курса
   useEffect(() => {
-    // Load Burriness Course progress
+    // прогресс с курса по картавости
     const savedBurrinessProgress = localStorage.getItem("burriness_courseProgress");
     const savedBurrinessTasks = localStorage.getItem("burriness_completedTasks");
     if (savedBurrinessProgress && savedBurrinessTasks) {
@@ -23,7 +23,7 @@ export default function Home() {
       setBurrinessCompletedTasks(parseInt(savedBurrinessTasks));
     }
 
-    // Load Fricatives Course progress
+    // прогресс с курса по картавости
     const savedFricativesProgress = localStorage.getItem("fricatives_courseProgress");
     const savedFricativesTasks = localStorage.getItem("fricatives_completedTasks");
     if (savedFricativesProgress && savedFricativesTasks) {

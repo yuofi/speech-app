@@ -1,4 +1,4 @@
-import { animateRectangles } from './animation';
+//import { animateRectangles } from './animation';
 import React, { useEffect, useRef } from "react";
 
 const AnimatedLogo = () => {
@@ -7,7 +7,7 @@ const AnimatedLogo = () => {
     const rect2Ref = useRef(null);
     const rect3Ref = useRef(null);
     const rect4Ref = useRef(null);
-
+    //пока не будем использовать анимацию для стабильности работы приложения
     useEffect(() => {
         //animateRectangles([rect1Ref, rect2Ref, rect3Ref, rect4Ref]);
     }, []);

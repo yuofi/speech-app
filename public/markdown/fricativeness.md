@@ -25,13 +25,3 @@
 Курс может быть представлен в виде видеоуроков или индивидуальных занятий с логопедом, где каждое занятие будет посвящено определенному упражнению или группе упражнений. Важно заниматься регулярно и самостоятельно для достижения устойчивого результата.
 
 Исправление произношения звука "г" требует времени и терпения, но при правильном подходе возможно добиться значительных улучшений.
-
-Citations:
-[1] https://3d-smile.ru/blog/kak-ispravit-kartavost
-[2] https://infourok.ru/materiali-dlya-logopeda-postanovka-zvukov-568701.html
-[3] https://www.youtube.com/watch?v=8pA-rkKhaRc
-[4] https://laskavaya.ru/ispravit-kartavost
-[5] https://nsportal.ru/nachalnaya-shkola/logopediya/2018/11/30/posledovatelnost-korrektsionnoy-raboty-pri-ispravlenii
-[6] https://rutube.ru/video/99e9c59aa643dfaed5a01f5bd772aa73/
-[7] https://eduprosvet.ru/sveden/files/rid/25._RPD_Sistem_kurs_fonetiki.pdf
-[8] https://ortodontcomplex.ru/articles/kak-izbavitsya-ot-kartavosti/

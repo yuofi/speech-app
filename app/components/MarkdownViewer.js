@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
+//используем встроенный просмотр .md для уудобства просмотра и редактирования (не в приложении) курсов
 const MarkdownViewer = ({ filePath }) => {
   const [markdownContent, setMarkdownContent] = useState("");
 
