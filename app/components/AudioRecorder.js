@@ -23,8 +23,8 @@ const AudioRecorder = ({ onFeedbackUpdate, phrase }) => {
         // При остановке записи обрабатываем аудио и отправляем на сервер
         mediaRecorder.onstop = async () => {
           const blob = new Blob(chunks.current, { type: "audio/mpeg" });
-          chunks.current = [];  
-          
+          chunks.current = [];
+
           //добавляем аудио и фразу для отправки на серевер
           const formData = new FormData();
           formData.append("audio", blob, "audio.mp3");
@@ -34,10 +34,13 @@ const AudioRecorder = ({ onFeedbackUpdate, phrase }) => {
 
           //отправляем данные на сервер для прогона через модель и принимаем ответ
           try {
-            const response = await fetch("https://yufii-speech-defects.hf.space/process-audio", {
-              method: "POST",
-              body: formData,
-            });
+            const response = await fetch(
+              "http://127.0.0.1:8000/process-audio",
+              {
+                method: "POST",
+                body: formData,
+              }
+            );
 
             //обработка ошибок
             if (!response.ok) {
@@ -55,20 +58,22 @@ const AudioRecorder = ({ onFeedbackUpdate, phrase }) => {
 
             //обрабатываем ответ с сервера (ответ модели и соответствие слова изначальному)
             const result = await response.json();
-            
+
             if (
               result &&
               result.prediction &&
-              Array.isArray(result.prediction) &&
-              result.prediction.length > 0 &&
-              Array.isArray(result.prediction[0]) &&
-              result.prediction[0].length > 0
+              Array.isArray(result.prediction[0])
             ) {
+              const predictionValues = result.prediction[0]; // Extract the prediction values
+
+              let feedbackValue;
               if (result.match_phrase) {
-                onFeedbackUpdate(Math.round(result.prediction[0][0]));
+                feedbackValue = Math.round(predictionValues[0]); // Use the first prediction value if the phrase matches
               } else {
-                onFeedbackUpdate(2); 
+                feedbackValue = 2; // Default to 2 if the phrase doesn't match
               }
+
+              onFeedbackUpdate(feedbackValue);
             } else {
               console.warn("Unexpected response format from server:", result);
             }
@@ -112,7 +117,7 @@ const AudioRecorder = ({ onFeedbackUpdate, phrase }) => {
           position: "relative",
           zIndex: 1,
           transform: "translate(4px, 4px)",
-          transition: "all 0.3s ease-in-out"
+          transition: "all 0.3s ease-in-out",
         }}
       >
         <Micro />
