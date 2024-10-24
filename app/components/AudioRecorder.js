@@ -35,7 +35,7 @@ const AudioRecorder = ({ onFeedbackUpdate, phrase }) => {
           //отправляем данные на сервер для прогона через модель и принимаем ответ
           try {
             const response = await fetch(
-              "https://701w-speech-defects.hf.space/process-audio",
+              "http://127.0.0.1:8000/process-audio",
               {
                 method: "POST",
                 body: formData,
@@ -59,21 +59,15 @@ const AudioRecorder = ({ onFeedbackUpdate, phrase }) => {
             //обрабатываем ответ с сервера (ответ модели и соответствие слова изначальному)
             const result = await response.json();
 
-            if (
-              result &&
-              result.prediction &&
-              Array.isArray(result.prediction[0])
-            ) {
-              const predictionValues = result.prediction[0]; // Extract the prediction values
-
-              let feedbackValue;
+            if (result && typeof result.prediction === 'number' && typeof result.match_phrase === 'boolean') {
               if (result.match_phrase) {
-                feedbackValue = Math.round(predictionValues[0]); // Use the first prediction value if the phrase matches
+                // Если фраза и предикт is 1 (верно) - return 1
+                // Если фраза верная, но предикт is 0 (не верно) - return 0
+                onFeedbackUpdate(result.prediction);
               } else {
-                feedbackValue = 2; // Default to 2 if the phrase doesn't match
+                // If phrase doesn't match - return 2
+                onFeedbackUpdate(2);
               }
-
-              onFeedbackUpdate(feedbackValue);
             } else {
               console.warn("Unexpected response format from server:", result);
             }
