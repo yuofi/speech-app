@@ -35,7 +35,7 @@ const AudioRecorder = ({ onFeedbackUpdate, phrase }) => {
           //отправляем данные на сервер для прогона через модель и принимаем ответ
           try {
             const response = await fetch(
-              "http://127.0.0.1:8000/process-audio",
+              "https://701w-speech-defects.hf.space/process-audio",
               {
                 method: "POST",
                 body: formData,
